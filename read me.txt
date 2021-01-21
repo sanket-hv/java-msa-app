@@ -1,0 +1,5 @@
+persistence-unit name="CustomerPU"
+
+//Resource Name
+<non-jta-data-source>jdbc/customermaster</non-jta-data-source>
+
