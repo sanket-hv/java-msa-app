@@ -1,0 +1,45 @@
+----------------server side----------------
+
+open bootstrap.java
+	@LoginConfig(authMethod="MP-JWT")
+	@DeclareRoles({"Admin"})
+
+add property file named payara-mp-jwt at other->src->main->resurces
+	accpeted.issuer = https://server.example.com (given in generatetoken)
+
+add public key in the same location
+
+in service
+	inject token if you want to get details from it like
+		@Inject JsonWebToken token;
+	set rolesallow in required method
+		@RolesAllowed("Admin")
+		
+
+		
+-----------------client side-----------------
+put given two files in sourcepackage and create new folder token
+	MPJWTToken
+	GenerateToken
+		set subject and groups to allow in generateJWT()
+			subject = "Yatinj";
+			groups = new ArrayList();
+			groups.add("Admin");
+			groups.add("Customer");
+
+add dependecy of io.vertx
+	<dependency>
+		<groupId>io.vertx</groupId>
+		<artifactId>vertx-auth-jwt</artifactId>
+		<version>3.8.1</version>
+	</dependency>
+	
+add private key at other->src->main->resources
+
+in client interface
+	@ClientHeaderParam(name = "authorization", value = "{generateJWTToken}")
+	default String generateJWTToken()
+    {
+		String token = "Bearer "+ GenerateToken.generateJWT();
+        return token;
+    }
